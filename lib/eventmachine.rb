@@ -652,21 +652,76 @@ module EventMachine
 #
 # EventMachine#attach registers a given socket with EventMachine 
 # 
-#The registered socket is treated by EventMachine in the same manner it treats the sockets
-#created by EventMahine#connect  method 
+# The registered socket is to be added to the list of sockets handled by the eventmachine 
+# eventloop. 
 #
 # EventMachine#attach takes the socket to be registered with EM which is simply an instance 
-# of any Class inheriting  IO class
-# It also takes an optional handler Module, that contains the callbacks  that will be invoked 
-# by the event loop on behalf of the connection.
+# of any Class inheriting  IO class.
+# It also takes an optional handler Module, that contains the callback methods to be invoked 
+# by the event loop whenever the socket is ready for reading.
 #
-# EventMachine#attach provides an extra call_back method which is 'notify_readable'
-# This method, if defined by handler module, instructs the EM NOT TO read the data received 
-# on socket, instead call the 'notify_readable' directly so that passed handler module can fetch 
-# data by itself
+# EventMachine#attach provides an extra callback method which is 'notify_readable'
+# This method, if defined by handler module, instructs the EM to attach the socket in 
+# a notify mode. This mode causes the eventmachine  not to read the data received at 
+# the socket whenever the attached socket is ready for read and to callback the
+# notify_readable method instead.
 #
 # If the 'notify_readable' method is not defined by handle module, the EM will read the data 
 # received and then call the call_back method 'receive_data'
+#
+# === Usage example for the EM::attach method 
+# 
+# The EM::run method starts a server on 127.0.0.1:8000 and passes an EchoServer module with it
+# The EchoServer module just defines one method receive_data which sends back the data to the server
+#
+# The EM::run then creates a new socket connecting on the EchoServer using TCPSocket.new, 
+# The connected socket is then attached to the EM using EM::attach and data is sent to the EchoServer
+# through the connected socket using $socket.send method 
+# 
+# What should happen is that the server listening at 127.0.0.1:8000 receives that data send through the socket
+# The eventmachine fetches the received data and calls the  EchoServer.receive_data callback method 
+# The receive_data sends it back to the sending socket 
+#
+# The attached socket is then ready for reading so the EM calls the Receiver.notify_readable callback method which
+# reads the data from the socket by $socket.recv ... unattaches the socket and stop the eventmachine
+#
+# The output should be like
+#
+# >>>>>> Server received: Sending data  ..... Sending it back to sender
+# ------ Client got back: Sending data 
+#
+# ............ Unattaching the socket and stopping the EM .... 
+#
+# require 'eventmachine'
+# require 'rubygems'
+# require 'socket'
+#
+# $sig
+#
+#
+## ### Receiver module is the client module implemeting the notify_readable method
+# module Receiver 
+#	def  notify_readable
+#		puts "------ Client got back: #{$socket.recv(32)}"
+#		puts "\n............ Unattaching the socket and stopping the EM .... "
+#		$sig.unattach true			
+#		EM::stop
+#	end
+# end 
+#
+# module EchoServer 
+#	def receive_data  data
+#		puts "\n>>>>>> Server received: #{data} ..... Sending it back to sender"
+#		send_data data
+#	end 
+# end
+#
+# EM::run { 
+#	EM::start_server "127.0.0.1", 8000, EchoServer; 
+#	$socket = TCPSocket.new("127.0.0.1", 8000)
+#	$sig = EM::attach $socket, Receiver
+#	$socket.send("Sending data ", 0)
+# }
 #
 ######################################################
 def  EventMachine::attach socket, handler=nil, *args

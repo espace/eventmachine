@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-$Id$
+$Id: ed.cpp 687 2008-05-15 14:28:32Z francis $
 
 File:     ed.cpp
 Date:     06Apr06
@@ -375,7 +375,6 @@ bool ConnectionDescriptor::SelectForWrite()
   }
 }
 
-
 /**************************
 ConnectionDescriptor::Read
 **************************/
@@ -412,6 +411,17 @@ void ConnectionDescriptor::Read()
 		bReadAttemptedAfterClose = true;
 		return;
 	}
+
+	/*************************************************************************************
+		Added by Riham Aldakkak to expose an interface to register a socket with the 
+		EventMacine  event loop in  a notify only mode 
+	*************************************************************************************/
+	if (attachMode == 	EM_ATTACH_IN_NOTIFY_MODE) {
+		if (EventCallback)
+			(*EventCallback)(GetBinding().c_str(), EM_CONNECTION_NOTIFY_READABLE, NULL, 0);
+		return ;
+	}
+	/************************************************************************************/
 
 	LastIo = gCurrentLoopTime;
 
@@ -1436,7 +1446,6 @@ DatagramDescriptor::SetCommInactivityTimeout
 int DatagramDescriptor::SetCommInactivityTimeout (int *value)
 {
   int out = 0;
-
   if (value) {
     if ((*value==0) || (*value >= 2)) {
       // Replace the value and send the old one back to the caller.

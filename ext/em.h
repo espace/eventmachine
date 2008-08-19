@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-$Id$
+$Id: em.h 668 2008-01-04 23:00:34Z blackhedd $
 
 File:     em.h
 Date:     06Apr06
@@ -69,6 +69,14 @@ class EventMachine_t
 		const char *InstallOneshotTimer (int);
 		const char *ConnectToServer (const char *, int);
 		const char *ConnectToUnixServer (const char *);
+
+		/*************************************************************************************
+			Added by Riham Aldakkak to expose an interface to register a socket with the 
+			EventMacine  event loop in  a notify only mode 
+		*************************************************************************************/	
+		const char *AttachToSocket (int, int);
+		/************************************************************************************/
+
 		const char *CreateTcpServer (const char *, int);
 		const char *OpenDatagramSocket (const char *, int);
 		const char *CreateUnixDomainServer (const char*);

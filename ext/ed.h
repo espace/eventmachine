@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-$Id$
+$Id: ed.h 687 2008-05-15 14:28:32Z francis $
 
 File:     ed.h
 Date:     06Apr06
@@ -78,6 +78,7 @@ class EventableDescriptor: public Bindable_t
 		#endif
 
 	private:
+
 		bool bCloseNow;
 		bool bCloseAfterWriting;
 		int MySocket;
@@ -140,6 +141,13 @@ class ConnectionDescriptor: public EventableDescriptor
 
 		void SetConnectPending (bool f) { bConnectPending = f; }
 
+		/*************************************************************************************
+			Added by Riham Aldakkak to expose an interface to register a socket with the 
+			EventMacine  event loop in  a notify only mode 
+		*************************************************************************************/
+		void SetAttachMode(int attach_mode) { attachMode = attach_mode;}
+		/************************************************************************************/
+
 		virtual void Read();
 		virtual void Write();
 		virtual void Heartbeat();
@@ -171,6 +179,14 @@ class ConnectionDescriptor: public EventableDescriptor
 		};
 
 	protected:
+
+		/*************************************************************************************
+			Added by Riham Aldakkak to expose an interface to register a socket with the 
+			EventMacine  event loop in  a notify only mode 
+		*************************************************************************************/
+		int attachMode;
+		/************************************************************************************/
+
 		bool bConnectPending;
 		bool bReadAttemptedAfterClose;
 		bool bWriteAttemptedAfterClose;

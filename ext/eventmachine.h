@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-$Id$
+$Id: eventmachine.h 679 2008-01-19 01:40:06Z blackhedd $
 
 File:     eventmachine.h
 Date:     15Apr06
@@ -30,7 +30,17 @@ extern "C" {
 		EM_CONNECTION_UNBOUND = 102,
 		EM_CONNECTION_ACCEPTED = 103,
 		EM_CONNECTION_COMPLETED = 104,
-		EM_LOOPBREAK_SIGNAL = 105
+		EM_LOOPBREAK_SIGNAL = 105,
+
+		/*************************************************************************************
+			Added by Riham Aldakkak to expose an interface to register a socket with the 
+			EventMacine  event loop in  a notify only mode 
+		*************************************************************************************/
+		EM_CONNECTION_NOTIFY_READABLE = 106,
+		EM_ATTACH_IN_NOTIFY_MODE = 107,
+		EM_ATTACH_IN_READ_MODE = 108
+		/************************************************************************************/
+
 	};
 
 	void evma_initialize_library (void(*)(const char*, int, const char*, int));
@@ -39,6 +49,15 @@ extern "C" {
 	const char *evma_install_oneshot_timer (int seconds);
 	const char *evma_connect_to_server (const char *server, int port);
 	const char *evma_connect_to_unix_server (const char *server);
+
+	/*************************************************************************************
+		Added by Riham Aldakkak to expose an interface to register a socket with the 
+		EventMacine  event loop in  a notify only mode 
+	**************************************************************************************/
+	const char *evma_attach_to_socket (int file_descriptor, int listen_mode);
+	void evma_unattach_to_socket (const char *binding, int aftre_writing);
+	/*************************************************************************************/
+
 	void evma_stop_tcp_server (const char *signature);
 	const char *evma_create_tcp_server (const char *address, int port);
 	const char *evma_create_unix_domain_server (const char *filename);

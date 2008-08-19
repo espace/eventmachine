@@ -1,4 +1,4 @@
-# $Id$
+# $Id: eventmachine.rb 688 2008-05-15 23:44:39Z francis $
 #
 # Author:: Francis Cianfrocca (gmail: blackhedd)
 # Homepage::  http://rubyeventmachine.com
@@ -646,6 +646,54 @@ module EventMachine
     c
   end
 
+######################################################
+# Author:: Riham Aldakkak
+# Company:: eSpace Technologies
+#
+# EventMachine#attach registers a given socket with EventMachine 
+# 
+#The registered socket is treated by EventMachine in the same manner it treats the sockets
+#created by EventMahine#connect  method 
+#
+# EventMachine#attach takes the socket to be registered with EM which is simply an instance 
+# of any Class inheriting  IO class
+# It also takes an optional handler Module, that contains the callbacks  that will be invoked 
+# by the event loop on behalf of the connection.
+#
+# EventMachine#attach provides an extra call_back method which is 'notify_readable'
+# This method, if defined by handler module, instructs the EM NOT TO read the data received 
+# on socket, instead call the 'notify_readable' directly so that passed handler module can fetch 
+# data by itself
+#
+# If the 'notify_readable' method is not defined by handle module, the EM will read the data 
+# received and then call the call_back method 'receive_data'
+#
+######################################################
+def  EventMachine::attach socket, handler=nil, *args
+
+       	klass = if (handler and handler.is_a?(Class))
+			handler
+		else
+			Class.new( Connection ) {handler and include handler}
+		end
+	arity = klass.instance_method(:initialize).arity
+	expected = arity >= 0 ? arity : -(arity + 1)
+	if (arity >= 0 and args.size != expected) or (arity < 0 and args.size < expected)
+		raise ArgumentError, "wrong number of arguments for #{klass}#initialize (#{args.size} for #{expected})"
+	end
+	s = if klass.public_instance_methods.any?{|m| m.to_s == 'notify_readable' }
+		attach_to_socket  socket.fileno, AttachInNotifyMode 
+	else
+		attach_to_socket  socket.fileno, AttachInReadMode
+	end
+	c = klass.new s, *args
+	@conns[s] = c
+	block_given? and yield c
+	c
+
+end
+######################################################
+######################################################
 
     #--
     # EXPERIMENTAL. DO NOT RELY ON THIS METHOD TO BE HERE IN THIS FORM, OR AT ALL.
@@ -1060,6 +1108,11 @@ module EventMachine
 		if opcode == ConnectionData
 			c = @conns[conn_binding] or raise ConnectionNotBound
 			c.receive_data data
+#############################################################################################
+		elsif opcode == ConnectionNotifyReadable
+			c = @conns[conn_binding] or raise ConnectionNotBound
+			c.notify_readable
+#############################################################################################
 		elsif opcode == ConnectionUnbound
 			if c = @conns.delete( conn_binding )
 				c.unbind
@@ -1147,7 +1200,7 @@ module EventMachine
 	end
 
 
-	# Default handler for RuntimeErrors that are raised in user code.
+	# Default handler for RuntimeErrors that are raised in user code.		end
 	# The default behavior is to re-raise the error, which ends your program.
 	# To override the default behavior, re-implement this method in your code.
 	# For example:
@@ -1248,7 +1301,7 @@ class Connection
   # Stubbed initialize so legacy superclasses can safely call super
   #
 	def initialize(*args) #:nodoc:
-  end
+        end
 
 	# EventMachine::Connection#post_init is called by the event loop
 	# immediately after the network connection has been established,
@@ -1325,6 +1378,10 @@ class Connection
 		EventMachine::close_connection @signature, after_writing
 	end
 
+
+	def unattach after_writing
+		EventMachine::unattach_to_socket @signature, after_writing
+	end
 	# EventMachine::Connection#close_connection_after_writing is a variant of close_connection.
 	# All of the descriptive comments given for close_connection also apply to
 	# close_connection_after_writing, <i>with one exception:</i> If the connection has
@@ -1618,5 +1675,4 @@ require 'protocols/smtpserver'
 require 'protocols/saslauth'
 
 require 'em/processes'
-
 

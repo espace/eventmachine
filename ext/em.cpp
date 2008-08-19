@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-$Id$
+$Id: em.cpp 686 2008-05-14 21:21:10Z francis $
 
 File:     em.cpp
 Date:     06Apr06
@@ -725,7 +725,6 @@ bool EventMachine_t::_RunSelectOnce()
 			FD_SET (sd, &(SelectData.fdreads));
 		if (ed->SelectForWrite())
 			FD_SET (sd, &(SelectData.fdwrites));
-
 		if (SelectData.maxsocket < sd)
 			SelectData.maxsocket = sd;
 	}
@@ -1163,6 +1162,33 @@ const char *EventMachine_t::ConnectToUnixServer (const char *server)
 	#endif
 }
 
+/*************************************************************************************
+	Added by Riham Aldakkak to expose an interface to register a socket with the 
+	EventMacine  event loop in  a notify only mode 
+*************************************************************************************/	
+/************
+EventMachine_t::AttachToSocket
+*************/
+
+const char *EventMachine_t::AttachToSocket(int sd, int attach_mode)
+{
+	
+	const char *out = NULL;
+
+        ConnectionDescriptor *cd = new ConnectionDescriptor (sd, this);
+	if (!cd)
+		throw std::runtime_error ("no connection allocated");
+	cd->SetConnectPending (true);
+	cd->SetAttachMode (attach_mode);
+	Add (cd);
+	out = cd->GetBinding().c_str();
+
+	if (out == NULL)
+		closesocket (sd);
+	return out;
+
+}
+/************************************************************************************/
 
 /************
 name2address
@@ -1299,7 +1325,7 @@ const char *EventMachine_t::CreateTcpServer (const char *server, int port)
 		goto fail;
 	}
 
-	if (listen (sd_accept, 100)) {
+	if (listen (sd_accept, 200)) {
 		//__warning ("listen failed");
 		goto fail;
 	}
@@ -1527,6 +1553,7 @@ void EventMachine_t::_ModifyDescriptors()
 			++i;
 		}
 	}
+
 	#endif
 
 	ModifiedDescriptors.clear();

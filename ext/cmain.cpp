@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-$Id$
+$Id: cmain.cpp 679 2008-01-19 01:40:06Z blackhedd $
 
 File:     cmain.cpp
 Date:     06Apr06
@@ -103,6 +103,31 @@ extern "C" const char *evma_connect_to_unix_server (const char *server)
 	return EventMachine->ConnectToUnixServer (server);
 }
 
+/*************************************************************************************
+	Added by Riham Aldakkak to expose an interface to register a socket with the 
+	EventMacine  event loop in  a notify only mode 
+*************************************************************************************/
+/***************************
+evma_attach_to_socket
+***************************/
+
+extern "C" const char *evma_attach_to_socket (int file_descriptor, int listen_mode)
+{
+	if (!EventMachine)
+		throw std::runtime_error ("not initialized");
+	return EventMachine->AttachToSocket (file_descriptor, listen_mode);
+}
+/***************************
+evma_unattach_to_socket
+***************************/
+extern "C" void evma_unattach_to_socket(const char *binding, int after_writing){
+	if (!EventMachine)
+		throw std::runtime_error ("not initialized");
+	ConnectionDescriptor::CloseConnection (binding, (after_writing ? true : false));
+	return ;
+}
+/*************************************************************************************
+*************************************************************************************/
 
 /**********************
 evma_create_tcp_server

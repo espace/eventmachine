@@ -43,6 +43,7 @@ static VALUE Intern_receive_data;
 	EventMacine  event loop in  a notify only mode 
 *************************************************************************************/
 static VALUE Intern_notify_readable;
+static VALUE Intern_notify_writable;
 /************************************************************************************/
 
 /****************
@@ -68,6 +69,17 @@ static void event_callback (const char *a1, int a2, const char *a3, int a4)
 		if (q == Qnil)
 			rb_raise (rb_eRuntimeError, "no connection");
 		rb_funcall (q, Intern_notify_readable, 0);
+	}
+	/*************************************************************************************
+		Added by Riham Aldakkak to expose an interface to register a socket with the 
+		EventMacine  event loop in  a notify only mode 
+	*************************************************************************************/
+	else if (a2 == EM_CONNECTION_NOTIFY_WRITABLE) {
+		VALUE t = rb_ivar_get (EmModule, Intern_at_conns);
+		VALUE q = rb_hash_aref (t, rb_str_new2(a1));
+		if (q == Qnil)
+			rb_raise (rb_eRuntimeError, "no connection");
+		rb_funcall (q, Intern_notify_writable, 0);
 	}
 	/************************************************************************************/
 	else if (a2 == EM_LOOPBREAK_SIGNAL) {
@@ -344,9 +356,9 @@ static VALUE t_connect_unix_server (VALUE self, VALUE serversocket)
 /*********************
 t_attach_to_socket
 *********************/
-static VALUE t_attach_to_socket (VALUE self, VALUE socket_file_descriptor, VALUE attach_mode)
+static VALUE t_attach_to_socket (VALUE self, VALUE socket_file_descriptor, VALUE read_mode, VALUE write_mode)
 {
-	const char *f = evma_attach_to_socket (NUM2INT(socket_file_descriptor), NUM2INT(attach_mode));
+	const char *f = evma_attach_to_socket (NUM2INT(socket_file_descriptor), NUM2INT(read_mode), NUM2INT(write_mode));
 	if (!f || !*f)
 		rb_raise (rb_eRuntimeError, "no connection");
 	return rb_str_new2 (f);
@@ -609,6 +621,7 @@ extern "C" void Init_rubyeventmachine()
 		EventMacine  event loop in  a notify only mode 
 	**************************************************************************************/	
 	Intern_notify_readable = rb_intern ("notify_readable");	
+	Intern_notify_writable = rb_intern ("notify_writable");	
 	/*************************************************************************************/
 
 	// INCOMPLETE, we need to define class Connections inside module EventMachine
@@ -641,7 +654,7 @@ extern "C" void Init_rubyeventmachine()
 		Added by Riham Aldakkak to expose an interface to register a socket with the 
 		EventMacine  event loop in  a notify only mode 
 	*************************************************************************************/
-	rb_define_module_function (EmModule, "attach_to_socket", (VALUE (*)(...))t_attach_to_socket, 2);
+	rb_define_module_function (EmModule, "attach_to_socket", (VALUE (*)(...))t_attach_to_socket, 3);
 	rb_define_module_function (EmModule, "unattach_to_socket", (VALUE (*)(...))t_unattach_to_socket, 2);
 	/*************************************************************************************/
 
@@ -687,8 +700,11 @@ extern "C" void Init_rubyeventmachine()
 		EventMacine  event loop in  a notify only mode 
 	*************************************************************************************/
 	rb_define_const (EmModule, "ConnectionNotifyReadable", INT2NUM(106));
-	rb_define_const (EmModule, "AttachInNotifyMode", INT2NUM(107));
-	rb_define_const (EmModule, "AttachInReadMode", INT2NUM(108));
+	rb_define_const (EmModule, "ConnectionNotifyWritable", INT2NUM(107));
+	rb_define_const (EmModule, "AttachInNotifyReadableMode", INT2NUM(108));
+	rb_define_const (EmModule, "AttachInReadMode", INT2NUM(109));
+	rb_define_const (EmModule, "AttachInNotifyWritableMode", INT2NUM(110));
+	rb_define_const (EmModule, "AttachInWriteMode", INT2NUM(111));
 	/*************************************************************************************/
 
 }

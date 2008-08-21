@@ -37,8 +37,11 @@ extern "C" {
 			EventMacine  event loop in  a notify only mode 
 		*************************************************************************************/
 		EM_CONNECTION_NOTIFY_READABLE = 106,
-		EM_ATTACH_IN_NOTIFY_MODE = 107,
-		EM_ATTACH_IN_READ_MODE = 108
+		EM_CONNECTION_NOTIFY_WRITABLE = 107,
+		EM_ATTACH_IN_NOTIFY_READABLE_MODE = 108,
+		EM_ATTACH_IN_READ_MODE = 109,
+		EM_ATTACH_IN_NOTIFY_WRITABLE_MODE = 110,
+		EM_ATTACH_IN_WRITE_MODE = 111
 		/************************************************************************************/
 
 	};
@@ -54,7 +57,7 @@ extern "C" {
 		Added by Riham Aldakkak to expose an interface to register a socket with the 
 		EventMacine  event loop in  a notify only mode 
 	**************************************************************************************/
-	const char *evma_attach_to_socket (int file_descriptor, int listen_mode);
+	const char *evma_attach_to_socket (int file_descriptor, int read_mode, int write_mode);
 	void evma_unattach_to_socket (const char *binding, int aftre_writing);
 	/*************************************************************************************/
 

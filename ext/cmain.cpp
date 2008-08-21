@@ -111,11 +111,11 @@ extern "C" const char *evma_connect_to_unix_server (const char *server)
 evma_attach_to_socket
 ***************************/
 
-extern "C" const char *evma_attach_to_socket (int file_descriptor, int listen_mode)
+extern "C" const char *evma_attach_to_socket (int file_descriptor, int read_mode, int write_mode)
 {
 	if (!EventMachine)
 		throw std::runtime_error ("not initialized");
-	return EventMachine->AttachToSocket (file_descriptor, listen_mode);
+	return EventMachine->AttachToSocket (file_descriptor, read_mode, write_mode);
 }
 /***************************
 evma_unattach_to_socket

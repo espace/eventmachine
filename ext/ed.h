@@ -145,7 +145,8 @@ class ConnectionDescriptor: public EventableDescriptor
 			Added by Riham Aldakkak to expose an interface to register a socket with the 
 			EventMacine  event loop in  a notify only mode 
 		*************************************************************************************/
-		void SetAttachMode(int attach_mode) { attachMode = attach_mode;}
+		void SetReadAttachMode(int read_mode) { readMode = read_mode;}
+		void SetWriteAttachMode(int write_mode) { writeMode = write_mode;}
 		/************************************************************************************/
 
 		virtual void Read();
@@ -184,7 +185,8 @@ class ConnectionDescriptor: public EventableDescriptor
 			Added by Riham Aldakkak to expose an interface to register a socket with the 
 			EventMacine  event loop in  a notify only mode 
 		*************************************************************************************/
-		int attachMode;
+		int readMode;
+		int writeMode;
 		/************************************************************************************/
 
 		bool bConnectPending;

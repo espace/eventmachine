@@ -368,7 +368,7 @@ bool ConnectionDescriptor::SelectForWrite()
    * have outgoing data to send.
    */
 
-  if (bConnectPending)
+  if (bConnectPending || writeMode ==EM_ATTACH_IN_NOTIFY_WRITABLE_MODE)
     return true;
   else {
     return (GetOutboundDataSize() > 0);
@@ -416,7 +416,7 @@ void ConnectionDescriptor::Read()
 		Added by Riham Aldakkak to expose an interface to register a socket with the 
 		EventMacine  event loop in  a notify only mode 
 	*************************************************************************************/
-	if (attachMode == 	EM_ATTACH_IN_NOTIFY_MODE) {
+	if (readMode == EM_ATTACH_IN_NOTIFY_READABLE_MODE) {
 		if (EventCallback)
 			(*EventCallback)(GetBinding().c_str(), EM_CONNECTION_NOTIFY_READABLE, NULL, 0);
 		return ;
@@ -559,6 +559,17 @@ void ConnectionDescriptor::Write()
 			//bCloseNow = true;
 	}
 	else {
+
+		/*************************************************************************************
+			Added by Riham Aldakkak to expose an interface to register a socket with the 
+			EventMacine  event loop in  a notify only mode 
+		*************************************************************************************/
+		if (writeMode == EM_ATTACH_IN_NOTIFY_WRITABLE_MODE) {
+			if (EventCallback)
+				(*EventCallback)(GetBinding().c_str(), EM_CONNECTION_NOTIFY_WRITABLE, NULL, 0);
+			return ;
+		}
+		/************************************************************************************/
 		_WriteOutboundData();
 	}
 }

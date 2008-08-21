@@ -736,11 +736,19 @@ def  EventMachine::attach socket, handler=nil, *args
 	if (arity >= 0 and args.size != expected) or (arity < 0 and args.size < expected)
 		raise ArgumentError, "wrong number of arguments for #{klass}#initialize (#{args.size} for #{expected})"
 	end
-	s = if klass.public_instance_methods.any?{|m| m.to_s == 'notify_readable' }
-		attach_to_socket  socket.fileno, AttachInNotifyMode 
+	readmode = if klass.public_instance_methods.any?{|m| m.to_s == 'notify_readable' }
+		AttachInNotifyReadableMode 
 	else
-		attach_to_socket  socket.fileno, AttachInReadMode
+		AttachInReadMode
 	end
+	writemode = if klass.public_instance_methods.any?{|m| m.to_s == 'notify_writable' }
+		AttachInNotifyWritableMode 
+	else
+		AttachInWriteMode
+	end
+
+	s = attach_to_socket  socket.fileno, readmode, writemode
+
 	c = klass.new s, *args
 	@conns[s] = c
 	block_given? and yield c
@@ -1167,6 +1175,9 @@ end
 		elsif opcode == ConnectionNotifyReadable
 			c = @conns[conn_binding] or raise ConnectionNotBound
 			c.notify_readable
+		elsif opcode == ConnectionNotifyWritable
+			c = @conns[conn_binding] or raise ConnectionNotBound
+			c.notify_writable
 #############################################################################################
 		elsif opcode == ConnectionUnbound
 			if c = @conns.delete( conn_binding )

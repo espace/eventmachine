@@ -74,7 +74,7 @@ class EventMachine_t
 			Added by Riham Aldakkak to expose an interface to register a socket with the 
 			EventMacine  event loop in  a notify only mode 
 		*************************************************************************************/	
-		const char *AttachToSocket (int, int);
+		const char *AttachToSocket (int, int, int);
 		/************************************************************************************/
 
 		const char *CreateTcpServer (const char *, int);

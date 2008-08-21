@@ -1170,16 +1170,29 @@ const char *EventMachine_t::ConnectToUnixServer (const char *server)
 EventMachine_t::AttachToSocket
 *************/
 
-const char *EventMachine_t::AttachToSocket(int sd, int attach_mode)
+const char *EventMachine_t::AttachToSocket(int sd, int read_mode, int write_mode)
 {
 	
+	for (size_t i = 0; i < Descriptors.size(); i++) {
+		EventableDescriptor *ed = NewDescriptors[i];
+		if (ed->GetSocket() == sd)
+			throw std::runtime_error ("adding bad descriptor");
+	}
+	
+	for (size_t i = 0; i < NewDescriptors.size(); i++) {
+		EventableDescriptor *ed = NewDescriptors[i];
+		if (ed->GetSocket() == sd)
+			throw std::runtime_error ("adding bad descriptor");
+	}
+
 	const char *out = NULL;
 
         ConnectionDescriptor *cd = new ConnectionDescriptor (sd, this);
 	if (!cd)
 		throw std::runtime_error ("no connection allocated");
 	cd->SetConnectPending (true);
-	cd->SetAttachMode (attach_mode);
+	cd->SetReadAttachMode (read_mode);
+	cd->SetWriteAttachMode (write_mode);
 	Add (cd);
 	out = cd->GetBinding().c_str();
 

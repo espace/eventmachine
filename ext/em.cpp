@@ -1172,7 +1172,7 @@ EventMachine_t::AttachToSocket
 
 const char *EventMachine_t::AttachToSocket(int sd, int read_mode, int write_mode)
 {
-	
+	/* offending code
 	for (size_t i = 0; i < Descriptors.size(); i++) {
 		EventableDescriptor *ed = NewDescriptors[i];
 		if (ed->GetSocket() == sd)
@@ -1184,7 +1184,7 @@ const char *EventMachine_t::AttachToSocket(int sd, int read_mode, int write_mode
 		if (ed->GetSocket() == sd)
 			throw std::runtime_error ("adding bad descriptor");
 	}
-
+        removed for now */
 	const char *out = NULL;
 
         ConnectionDescriptor *cd = new ConnectionDescriptor (sd, this);

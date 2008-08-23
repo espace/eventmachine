@@ -190,6 +190,9 @@ ConnectionDescriptor::ConnectionDescriptor (int sd, EventMachine_t *em):
 	#ifdef HAVE_KQUEUE
 	MyEventMachine->ArmKqueueWriter (this);
 	#endif
+        /* initialize read and write mode to some value */
+        readMode = -1; 
+        writeMode = -1;
 }
 
 

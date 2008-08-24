@@ -1170,7 +1170,7 @@ const char *EventMachine_t::ConnectToUnixServer (const char *server)
 EventMachine_t::AttachToSocket
 *************/
 
-const char *EventMachine_t::AttachToSocket(int sd, int read_mode, int write_mode)
+const char *EventMachine_t::AttachSocket(int sd, int read_mode, int write_mode)
 {
 	
 	for (size_t i = 0; i < Descriptors.size(); i++) {

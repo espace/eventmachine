@@ -356,9 +356,9 @@ static VALUE t_connect_unix_server (VALUE self, VALUE serversocket)
 /*********************
 t_attach_to_socket
 *********************/
-static VALUE t_attach_to_socket (VALUE self, VALUE socket_file_descriptor, VALUE read_mode, VALUE write_mode)
+static VALUE t_attach_socket (VALUE self, VALUE socket_file_descriptor, VALUE read_mode, VALUE write_mode)
 {
-	const char *f = evma_attach_to_socket (NUM2INT(socket_file_descriptor), NUM2INT(read_mode), NUM2INT(write_mode));
+	const char *f = evma_attach_socket (NUM2INT(socket_file_descriptor), NUM2INT(read_mode), NUM2INT(write_mode));
 	if (!f || !*f)
 		rb_raise (rb_eRuntimeError, "no connection");
 	return rb_str_new2 (f);
@@ -366,9 +366,9 @@ static VALUE t_attach_to_socket (VALUE self, VALUE socket_file_descriptor, VALUE
 /*********************
 t_unattach_to_socket
 *********************/
-static VALUE t_unattach_to_socket (VALUE self,  VALUE signature, VALUE after_writing)
+static VALUE t_unattach_socket (VALUE self,  VALUE signature, VALUE after_writing)
 {
-	evma_unattach_to_socket (StringValuePtr(signature), (after_writing == Qtrue) ? 1 : 0);
+	evma_unattach_socket (StringValuePtr(signature), (after_writing == Qtrue) ? 1 : 0);
 	return Qnil;
 }
 /************************************************************************************/
@@ -654,8 +654,8 @@ extern "C" void Init_rubyeventmachine()
 		Added by Riham Aldakkak to expose an interface to register a socket with the 
 		EventMacine  event loop in  a notify only mode 
 	*************************************************************************************/
-	rb_define_module_function (EmModule, "attach_to_socket", (VALUE (*)(...))t_attach_to_socket, 3);
-	rb_define_module_function (EmModule, "unattach_to_socket", (VALUE (*)(...))t_unattach_to_socket, 2);
+	rb_define_module_function (EmModule, "attach_socket", (VALUE (*)(...))t_attach_socket, 3);
+	rb_define_module_function (EmModule, "unattach_socket", (VALUE (*)(...))t_unattach_socket, 2);
 	/*************************************************************************************/
 
 	rb_define_module_function (EmModule, "open_udp_socket", (VALUE(*)(...))t_open_udp_socket, 2);

@@ -57,8 +57,8 @@ extern "C" {
 		Added by Riham Aldakkak to expose an interface to register a socket with the 
 		EventMacine  event loop in  a notify only mode 
 	**************************************************************************************/
-	const char *evma_attach_to_socket (int file_descriptor, int read_mode, int write_mode);
-	void evma_unattach_to_socket (const char *binding, int aftre_writing);
+	const char *evma_attach_socket (int file_descriptor, int read_mode, int write_mode);
+	void evma_unattach_socket (const char *binding, int aftre_writing);
 	/*************************************************************************************/
 
 	void evma_stop_tcp_server (const char *signature);

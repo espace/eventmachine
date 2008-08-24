@@ -182,7 +182,9 @@ ConnectionDescriptor::ConnectionDescriptor (int sd, EventMachine_t *em):
 	#endif
 	bIsServer (false),
 	LastIo (gCurrentLoopTime),
-	InactivityTimeout (0)
+	InactivityTimeout (0),
+	readMode(EM_ATTACH_IN_READ_MODE),
+	writeMode(EM_ATTACH_IN_WRITE_MODE)
 {
 	#ifdef HAVE_EPOLL
 	EpollEvent.events = EPOLLOUT;

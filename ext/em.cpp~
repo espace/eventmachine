@@ -1168,10 +1168,12 @@ EventMachine_t::AttachFile
 
 const char *EventMachine_t::AttachFile(int sd, int read_mode, int write_mode)
 {
-
+<<<<<<< HEAD:ext/em.cpp
 	
+	/*
+=======
 	/* offending code
-
+>>>>>>> 6b3d8d9dd99d453d0f581dff6da7cdcfa08e98ca:ext/em.cpp
 	for (size_t i = 0; i < Descriptors.size(); i++) {
 		EventableDescriptor *ed = NewDescriptors[i];
 		if (ed->GetSocket() == sd)
@@ -1183,9 +1185,12 @@ const char *EventMachine_t::AttachFile(int sd, int read_mode, int write_mode)
 		if (ed->GetSocket() == sd)
 			throw std::runtime_error ("adding bad descriptor");
 	}
-
+<<<<<<< HEAD:ext/em.cpp
 	*/
 
+=======
+        removed for now */
+>>>>>>> 6b3d8d9dd99d453d0f581dff6da7cdcfa08e98ca:ext/em.cpp
 	const char *out = NULL;
 
         ConnectionDescriptor *cd = new ConnectionDescriptor (sd, this);

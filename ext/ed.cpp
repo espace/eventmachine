@@ -414,16 +414,11 @@ void ConnectionDescriptor::Read()
 		return;
 	}
 
-	/*************************************************************************************
-		Added by Riham Aldakkak to expose an interface to register a socket with the 
-		EventMacine  event loop in  a notify only mode 
-	*************************************************************************************/
 	if (readMode == EM_ATTACH_IN_NOTIFY_READABLE_MODE) {
 		if (EventCallback)
 			(*EventCallback)(GetBinding().c_str(), EM_CONNECTION_NOTIFY_READABLE, NULL, 0);
 		return ;
 	}
-	/************************************************************************************/
 
 	LastIo = gCurrentLoopTime;
 
@@ -562,16 +557,12 @@ void ConnectionDescriptor::Write()
 	}
 	else {
 
-		/*************************************************************************************
-			Added by Riham Aldakkak to expose an interface to register a socket with the 
-			EventMacine  event loop in  a notify only mode 
-		*************************************************************************************/
 		if (writeMode == EM_ATTACH_IN_NOTIFY_WRITABLE_MODE) {
 			if (EventCallback)
 				(*EventCallback)(GetBinding().c_str(), EM_CONNECTION_NOTIFY_WRITABLE, NULL, 0);
 			return ;
 		}
-		/************************************************************************************/
+
 		_WriteOutboundData();
 	}
 }

@@ -69,13 +69,7 @@ class EventMachine_t
 		const char *InstallOneshotTimer (int);
 		const char *ConnectToServer (const char *, int);
 		const char *ConnectToUnixServer (const char *);
-
-		/*************************************************************************************
-			Added by Riham Aldakkak to expose an interface to register a socket with the 
-			EventMacine  event loop in  a notify only mode 
-		*************************************************************************************/	
-		const char *AttachSocket (int, int, int);
-		/************************************************************************************/
+		const char *AttachFile (int, int, int);
 
 		const char *CreateTcpServer (const char *, int);
 		const char *OpenDatagramSocket (const char *, int);

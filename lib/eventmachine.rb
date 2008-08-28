@@ -747,7 +747,7 @@ def  EventMachine::attach socket, handler=nil, *args
 		AttachInWriteMode
 	end
 
-	s = attach_socket  socket.fileno, readmode, writemode
+	s = attach_file  socket.fileno, readmode, writemode
 
 	c = klass.new s, *args
 	@conns[s] = c
@@ -1446,7 +1446,7 @@ class Connection
 
 
 	def unattach after_writing
-		EventMachine::unattach_socket @signature, after_writing
+		EventMachine::unattach_file @signature, after_writing
 	end
 	# EventMachine::Connection#close_connection_after_writing is a variant of close_connection.
 	# All of the descriptive comments given for close_connection also apply to

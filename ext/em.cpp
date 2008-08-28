@@ -1162,17 +1162,14 @@ const char *EventMachine_t::ConnectToUnixServer (const char *server)
 	#endif
 }
 
-/*************************************************************************************
-	Added by Riham Aldakkak to expose an interface to register a socket with the 
-	EventMacine  event loop in  a notify only mode 
-*************************************************************************************/	
 /************
-EventMachine_t::AttachToSocket
+EventMachine_t::AttachFile
 *************/
 
-const char *EventMachine_t::AttachSocket(int sd, int read_mode, int write_mode)
+const char *EventMachine_t::AttachFile(int sd, int read_mode, int write_mode)
 {
 	
+	/*
 	for (size_t i = 0; i < Descriptors.size(); i++) {
 		EventableDescriptor *ed = NewDescriptors[i];
 		if (ed->GetSocket() == sd)
@@ -1184,6 +1181,7 @@ const char *EventMachine_t::AttachSocket(int sd, int read_mode, int write_mode)
 		if (ed->GetSocket() == sd)
 			throw std::runtime_error ("adding bad descriptor");
 	}
+	*/
 
 	const char *out = NULL;
 
@@ -1201,7 +1199,6 @@ const char *EventMachine_t::AttachSocket(int sd, int read_mode, int write_mode)
 	return out;
 
 }
-/************************************************************************************/
 
 /************
 name2address

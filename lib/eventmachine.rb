@@ -724,7 +724,7 @@ module EventMachine
 # }
 #
 ######################################################
-def  EventMachine::attach socket, handler=nil, *args
+def  EventMachine::attach io, handler=nil, *args
 
        	klass = if (handler and handler.is_a?(Class))
 			handler
@@ -747,7 +747,7 @@ def  EventMachine::attach socket, handler=nil, *args
 		AttachInWriteMode
 	end
 
-	s = attach_file  socket.fileno, readmode, writemode
+	s = attach_file  io.fileno, readmode, writemode
 
 	c = klass.new s, *args
 	@conns[s] = c

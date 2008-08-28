@@ -627,13 +627,8 @@ extern "C" void Init_rubyeventmachine()
 	rb_define_module_function (EmModule, "connect_server", (VALUE(*)(...))t_connect_server, 2);
 	rb_define_module_function (EmModule, "connect_unix_server", (VALUE(*)(...))t_connect_unix_server, 1);
 
-	/*************************************************************************************
-		Added by Riham Aldakkak to expose an interface to register a socket with the 
-		EventMacine  event loop in  a notify only mode 
-	*************************************************************************************/
 	rb_define_module_function (EmModule, "attach_file", (VALUE (*)(...))t_attach_file, 3);
 	rb_define_module_function (EmModule, "unattach_file", (VALUE (*)(...))t_unattach_file, 2);
-	/*************************************************************************************/
 
 	rb_define_module_function (EmModule, "open_udp_socket", (VALUE(*)(...))t_open_udp_socket, 2);
 	rb_define_module_function (EmModule, "read_keyboard", (VALUE(*)(...))t_read_keyboard, 0);
@@ -672,17 +667,12 @@ extern "C" void Init_rubyeventmachine()
 	rb_define_const (EmModule, "ConnectionCompleted", INT2NUM(104));
 	rb_define_const (EmModule, "LoopbreakSignalled", INT2NUM(105));
 
-	/*************************************************************************************
-		added by Riham Aldakkak to expose an interface to register a socket with the 
-		EventMacine  event loop in  a notify only mode 
-	*************************************************************************************/
 	rb_define_const (EmModule, "ConnectionNotifyReadable", INT2NUM(106));
 	rb_define_const (EmModule, "ConnectionNotifyWritable", INT2NUM(107));
 	rb_define_const (EmModule, "AttachInNotifyReadableMode", INT2NUM(108));
 	rb_define_const (EmModule, "AttachInReadMode", INT2NUM(109));
 	rb_define_const (EmModule, "AttachInNotifyWritableMode", INT2NUM(110));
 	rb_define_const (EmModule, "AttachInWriteMode", INT2NUM(111));
-	/*************************************************************************************/
 
 }
 

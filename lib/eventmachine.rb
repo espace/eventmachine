@@ -254,7 +254,7 @@ module EventMachine
     EventMachine::run(&block)
   end
 
-  # #add a no-op implementation to epoll
+  # add a no-op implementation to epoll
   def epoll
   end
 
@@ -297,7 +297,6 @@ module EventMachine
   #--
   # Changed 04Oct06: We now pass the interval as an integer number of milliseconds.
   #
-
   def EventMachine::add_timer *args, &block
     interval = args.shift
     code = args.shift || block

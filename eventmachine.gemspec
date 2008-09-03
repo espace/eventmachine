@@ -3,8 +3,8 @@ require 'rake/gempackagetask'
 
 Gem::Specification.new do |s|
         s.name = "eventmachine"
-        s.version = "0.12.1"
-        s.date = "2008-8-18"
+        s.version = "0.12.2"
+        s.date = "2008-9-3"
         s.summary = "Add Notify on read for ruby eventmachine"
         s.description = "Add Notify on read for ruby eventmachine"
 	s.email  = "riham.aldakkak@gmail.com"

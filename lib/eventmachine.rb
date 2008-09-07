@@ -255,7 +255,7 @@ module EventMachine
   end
 
   # #add a no-op implementation to epoll
-  def epoll
+  def EventMachine::epoll
   end
 
   # EventMachine#add_timer adds a one-shot timer to the event loop.

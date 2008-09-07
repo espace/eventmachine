@@ -1338,7 +1338,7 @@ const char *EventMachine_t::CreateTcpServer (const char *server, int port)
 		goto fail;
 	}
 
-	if (listen (sd_accept, 200)) {
+	if (listen (sd_accept, 100)) {
 		//__warning ("listen failed");
 		goto fail;
 	}
